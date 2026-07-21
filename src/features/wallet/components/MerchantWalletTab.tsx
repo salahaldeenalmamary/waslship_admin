@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useWalletBalance, useWalletTransactions } from '../../../hooks/useWallet';
 import { useLanguage } from '../../../providers/LanguageProvider';
+import { AppSelect } from '../../../components/common/AppDropdown';
 import { 
   Wallet, 
   ArrowUpRight, 
@@ -21,6 +22,22 @@ export default function MerchantWalletTab() {
   const [page, setPage] = useState(1);
   const [type, setType] = useState<string>('');
   const [status, setStatus] = useState<string>('');
+
+  const typeOptions = [
+    { value: '', label: t('allTypes') },
+    { value: 'Deposit', label: t('deposit') },
+    { value: 'Withdrawal', label: t('withdrawal') },
+    { value: 'Deduction', label: t('deduction') },
+    { value: 'Refund', label: t('refund') },
+    { value: 'CODSettlement', label: t('codSettlement') },
+  ];
+
+  const statusOptions = [
+    { value: '', label: t('allStatuses') },
+    { value: 'Completed', label: t('completed') },
+    { value: 'Pending', label: t('pending') },
+    { value: 'Failed', label: t('failed') },
+  ];
 
   const { data: balance, isLoading: balanceLoading, error: balanceError, refetch: refetchBalance } = useWalletBalance();
   const { data: transactionsData, isLoading: txLoading, error: txError, refetch: refetchTx } = useWalletTransactions(page, 10, type, status);
@@ -173,32 +190,24 @@ export default function MerchantWalletTab() {
           
           <div className="flex flex-wrap items-center gap-3">
             {/* Filter by Type */}
-            <select
+            <AppSelect
+              options={typeOptions}
               value={type}
-              onChange={(e) => { setType(e.target.value); setPage(1); }}
-              className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+              onChange={(val) => { setType(val); setPage(1); }}
+              placeholder={t('allTypes')}
+              triggerClassName="min-w-[130px] py-1.5 px-3 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg text-xs"
               id="select-tx-type"
-            >
-              <option value="">{t('allTypes')}</option>
-              <option value="Deposit">{t('deposit')}</option>
-              <option value="Withdrawal">{t('withdrawal')}</option>
-              <option value="Deduction">{t('deduction')}</option>
-              <option value="Refund">{t('refund')}</option>
-              <option value="CODSettlement">{t('codSettlement')}</option>
-            </select>
+            />
 
             {/* Filter by Status */}
-            <select
+            <AppSelect
+              options={statusOptions}
               value={status}
-              onChange={(e) => { setStatus(e.target.value); setPage(1); }}
-              className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+              onChange={(val) => { setStatus(val); setPage(1); }}
+              placeholder={t('allStatuses')}
+              triggerClassName="min-w-[130px] py-1.5 px-3 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg text-xs"
               id="select-tx-status"
-            >
-              <option value="">{t('allStatuses')}</option>
-              <option value="Completed">{t('completed')}</option>
-              <option value="Pending">{t('pending')}</option>
-              <option value="Failed">{t('failed')}</option>
-            </select>
+            />
           </div>
         </div>
 

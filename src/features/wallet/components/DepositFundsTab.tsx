@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useBankAccounts, useCreateBankTransfer } from '../../../hooks/useWallet';
 import { useLanguage } from '../../../providers/LanguageProvider';
+import { AppSelect } from '../../../components/common/AppDropdown';
 import { 
   Building2, 
   Upload, 
@@ -239,23 +240,18 @@ export default function DepositFundsTab() {
 
             {/* Step 1: Select Bank Account */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                {t('targetBankAccountRequired')}
-              </label>
-              <select
+              <AppSelect
+                label={t('targetBankAccountRequired')}
                 value={selectedAccountId}
-                onChange={(e) => setSelectedAccountId(e.target.value)}
-                required
-                className="block w-full px-3.5 py-2 text-sm bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer"
+                onChange={(val) => setSelectedAccountId(val)}
+                placeholder={t('targetBankAccountSelectPlaceholder')}
+                options={activeAccounts.map((acc) => ({
+                  value: acc.id,
+                  label: `${acc.bankName} - ${acc.accountName}`,
+                  description: `${acc.accountNumber} (${acc.currency})`
+                }))}
                 id="select-target-account"
-              >
-                <option value="">{t('targetBankAccountSelectPlaceholder')}</option>
-                {activeAccounts.map((acc) => (
-                  <option key={acc.id} value={acc.id}>
-                    {acc.bankName} - {acc.accountName}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
             {/* Grid fields */}

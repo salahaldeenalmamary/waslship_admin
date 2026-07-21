@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuth } from '../../../providers/AuthProvider';
 import { useLanguage } from '../../../providers/LanguageProvider';
 import MerchantWalletTab from '../components/MerchantWalletTab';
 import DepositFundsTab from '../components/DepositFundsTab';
 import AdminTransfersTab from '../components/AdminTransfersTab';
 import AdminAccountsTab from '../components/AdminAccountsTab';
+import AppTabs, { AppTabItem } from '../../../components/common/AppTabs';
 import { 
-  Wallet, 
   ArrowDownToLine, 
   ShieldCheck, 
   Building2, 
@@ -16,13 +16,39 @@ import {
 
 export default function WalletPage() {
   const { user } = useAuth();
-  const { t, isRTL } = useLanguage();
+  const { t } = useLanguage();
   
-  // Primary Tabs
-  const [activeTab, setActiveTab] = useState<'overview' | 'deposit' | 'admin_transfers' | 'admin_accounts'>('overview');
-
   // Verify if current user is an Admin
   const isAdmin = user?.role === 'Admin' || user?.role?.toLowerCase() === 'admin';
+
+  const tabItems: AppTabItem[] = [
+    { 
+      id: 'overview', 
+      label: t('overviewAndLogs'), 
+      icon: History,
+      content: () => <MerchantWalletTab />
+    },
+    { 
+      id: 'deposit', 
+      label: t('depositFunds'), 
+      icon: ArrowDownToLine,
+      content: () => <DepositFundsTab />
+    },
+    ...(isAdmin ? [
+      { 
+        id: 'admin_transfers', 
+        label: t('reviewTransfersAdmin'), 
+        icon: ShieldCheck,
+        content: () => <AdminTransfersTab />
+      },
+      { 
+        id: 'admin_accounts', 
+        label: t('officialAccountsAdmin'), 
+        icon: Building2,
+        content: () => <AdminAccountsTab />
+      }
+    ] : [])
+  ];
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -39,73 +65,15 @@ export default function WalletPage() {
         </div>
       </div>
 
-      {/* Main Tab Bar */}
-      <div className="border-b border-slate-200">
-        <nav className="flex flex-wrap -mb-px gap-6" aria-label="Tabs" id="wallet-main-tabs">
-          {/* Overview Tab */}
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`pb-4 px-1 border-b-2 font-semibold text-sm transition-all flex items-center gap-2 cursor-pointer ${
-              activeTab === 'overview'
-                ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
-            }`}
-          >
-            <History className="w-4 h-4" />
-            {t('overviewAndLogs')}
-          </button>
-
-          {/* Deposit Funds Tab */}
-          <button
-            onClick={() => setActiveTab('deposit')}
-            className={`pb-4 px-1 border-b-2 font-semibold text-sm transition-all flex items-center gap-2 cursor-pointer ${
-              activeTab === 'deposit'
-                ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
-            }`}
-          >
-            <ArrowDownToLine className="w-4 h-4" />
-            {t('depositFunds')}
-          </button>
-
-          {/* Admin Tabs (Only visible if Admin) */}
-          {isAdmin && (
-            <>
-              <button
-                onClick={() => setActiveTab('admin_transfers')}
-                className={`pb-4 px-1 border-b-2 font-semibold text-sm transition-all flex items-center gap-2 cursor-pointer ${
-                  activeTab === 'admin_transfers'
-                    ? 'border-indigo-600 text-indigo-600'
-                    : 'border-transparent text-slate-500 hover:text-indigo-700 hover:border-slate-300'
-                }`}
-              >
-                <ShieldCheck className="w-4 h-4" />
-                {t('reviewTransfersAdmin')}
-              </button>
-
-              <button
-                onClick={() => setActiveTab('admin_accounts')}
-                className={`pb-4 px-1 border-b-2 font-semibold text-sm transition-all flex items-center gap-2 cursor-pointer ${
-                  activeTab === 'admin_accounts'
-                    ? 'border-indigo-600 text-indigo-600'
-                    : 'border-transparent text-slate-500 hover:text-indigo-700 hover:border-slate-300'
-                }`}
-              >
-                <Building2 className="w-4 h-4" />
-                {t('officialAccountsAdmin')}
-              </button>
-            </>
-          )}
-        </nav>
-      </div>
-
-      {/* Tab Contents */}
-      <div className="py-2" id="wallet-tab-content">
-        {activeTab === 'overview' && <MerchantWalletTab />}
-        {activeTab === 'deposit' && <DepositFundsTab />}
-        {activeTab === 'admin_transfers' && isAdmin && <AdminTransfersTab />}
-        {activeTab === 'admin_accounts' && isAdmin && <AdminAccountsTab />}
-      </div>
+      {/* Main Tab Bar with Dynamic rendering and persistence */}
+      <AppTabs 
+        tabs={tabItems}
+        variant="underline"
+        size="md"
+        persistenceKey="merchant_wallet_tabs"
+        persistenceMode="local"
+        lazy={true}
+      />
     </div>
   );
 }

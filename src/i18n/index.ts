@@ -78,6 +78,7 @@ const resources = {
       // Settings Page
       settingsDesc: 'Manage your account preferences and integrations.',
       subTabGeneral: 'General Settings',
+      subTabBankAccounts: 'Bank Accounts',
       subTabLocations: 'Locations',
       subTabWebhooks: 'Webhooks',
       languagePreference: 'Language Preference',
@@ -278,6 +279,7 @@ const resources = {
       // Settings Page
       settingsDesc: 'إدارة تفضيلات حسابك وتكاملات الخدمات.',
       subTabGeneral: 'الإعدادات العامة',
+      subTabBankAccounts: 'الحسابات البنكية',
       subTabLocations: 'المواقع والفروع',
       subTabWebhooks: 'روابط الويب (Webhooks)',
       languagePreference: 'تفضيل اللغة',

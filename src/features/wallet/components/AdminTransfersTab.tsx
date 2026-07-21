@@ -7,6 +7,7 @@ import {
   useRejectTransfer 
 } from '../../../hooks/useWallet';
 import { useLanguage } from '../../../providers/LanguageProvider';
+import Tabs, { TabItem } from '../../../components/ui/Tabs';
 import { 
   Check, 
   X, 
@@ -124,42 +125,32 @@ export default function AdminTransfersTab() {
   const currentTransfers = subTab === 'pending' ? pendingData?.items || [] : processingData?.items || [];
   const currentPaged = subTab === 'pending' ? pendingData : processingData;
 
+  const subTabs: TabItem[] = [
+    { 
+      id: 'pending', 
+      label: t('pendingVerification'), 
+      badge: pendingData && pendingData.totalCount > 0 ? pendingData.totalCount : undefined 
+    },
+    { 
+      id: 'processing', 
+      label: t('underReview'), 
+      badge: processingData && processingData.totalCount > 0 ? processingData.totalCount : undefined 
+    }
+  ];
+
   return (
     <div className="space-y-6">
       {/* Search & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Toggle subtab */}
-        <div className="flex bg-slate-100 rounded-lg p-0.5" id="admin-transfer-tabs">
-          <button
-            onClick={() => { setSubTab('pending'); setPage(1); }}
-            className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-              subTab === 'pending' 
-                ? 'bg-white text-slate-900 shadow-sm' 
-                : 'text-slate-500 hover:text-slate-900'
-            }`}
-          >
-            {t('pendingVerification')}
-            {pendingData && pendingData.totalCount > 0 && (
-              <span className="ms-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-white">
-                {pendingData.totalCount}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => { setSubTab('processing'); setPage(1); }}
-            className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-              subTab === 'processing' 
-                ? 'bg-white text-slate-900 shadow-sm' 
-                : 'text-slate-500 hover:text-slate-900'
-            }`}
-          >
-            {t('underReview')}
-            {processingData && processingData.totalCount > 0 && (
-              <span className="ms-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500 text-white">
-                {processingData.totalCount}
-              </span>
-            )}
-          </button>
+        <div id="admin-transfer-tabs" className="w-full sm:w-auto">
+          <Tabs
+            tabs={subTabs}
+            activeTab={subTab}
+            onChange={(id) => { setSubTab(id as any); setPage(1); }}
+            variant="pills"
+            size="sm"
+          />
         </div>
 
         {/* Search */}
