@@ -3,6 +3,7 @@ import { BrowserRouter, useLocation } from 'react-router-dom';
 import { DashboardLayout } from './layouts/DashboardLayout';
 import { AppRoutes } from './routes/AppRoutes';
 import { AuthProvider, useAuth } from './providers/AuthProvider';
+import { LanguageProvider } from './providers/LanguageProvider';
 
 function AppContent() {
   const { isAuthenticated } = useAuth();
@@ -25,9 +26,11 @@ function AppContent() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }

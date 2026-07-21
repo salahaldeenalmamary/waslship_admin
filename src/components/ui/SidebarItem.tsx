@@ -21,7 +21,7 @@ export function SidebarItem({ icon, label, to }: SidebarItemProps) {
     >
       {({ isActive }) => (
         <>
-          <span className={`mr-3 h-5 w-5 ${isActive ? 'text-indigo-700' : 'text-slate-400'}`}>
+          <span className={`me-3 h-5 w-5 ${isActive ? 'text-indigo-700' : 'text-slate-400'}`}>
             {icon}
           </span>
           {label}
