@@ -5,12 +5,15 @@ export const userService = {
   /**
    * List all admins
    */
-  list: async (): Promise<User[]> => {
-    const { data } = await apiClient.get<PaginatedAdmins>('/users/admins?page=1&pageSize=100');
-    return (data.items || []).map(admin => ({
-      ...admin,
-      status: admin.isActive ? UserStatus.ACTIVE : UserStatus.INACTIVE
-    }));
+  list: async (page = 1, pageSize = 20): Promise<PaginatedAdmins> => {
+    const { data } = await apiClient.get<PaginatedAdmins>(`/users/admins?page=${page}&pageSize=${pageSize}`);
+    return {
+      ...data,
+      items: (data.items || []).map(admin => ({
+        ...admin,
+        status: admin.isActive ? UserStatus.ACTIVE : UserStatus.INACTIVE
+      }))
+    };
   },
 
   /**
