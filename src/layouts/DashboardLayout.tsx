@@ -8,15 +8,20 @@ import {
   Plus, 
   Search, 
   Bell, 
-  MapPin 
+  MapPin,
+  Users as UsersIcon,
+  LogOut
 } from 'lucide-react';
 import { SidebarItem } from '../components/ui/SidebarItem';
+import { useAuth } from '../providers/AuthProvider';
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const { user, logout } = useAuth();
+
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* Sidebar */}
@@ -30,17 +35,27 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <SidebarItem icon={<Package />} label="Shipments" to="/shipments" />
           <SidebarItem icon={<MapPin />} label="Courier Rates" to="/rates" />
           <SidebarItem icon={<Wallet />} label="Wallet & Billing" to="/wallet" />
+          <SidebarItem icon={<UsersIcon />} label="Users" to="/users" />
           <SidebarItem icon={<SettingsIcon />} label="Settings" to="/settings" />
         </nav>
         <div className="p-4 border-t border-slate-200">
-          <div className="flex items-center">
-            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold">
-              SA
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold">
+                {user?.fullName.charAt(0) || 'A'}
+              </div>
+              <div className="ml-3">
+                <p className="text-xs font-semibold text-slate-900 truncate w-24">{user?.fullName || 'Admin'}</p>
+                <p className="text-[10px] text-slate-500 truncate w-24">{user?.email || 'admin@waslship.com'}</p>
+              </div>
             </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-slate-900">Store Admin</p>
-              <p className="text-xs text-slate-500">store@example.com</p>
-            </div>
+            <button 
+              onClick={logout}
+              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
+              title="Logout"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </aside>
